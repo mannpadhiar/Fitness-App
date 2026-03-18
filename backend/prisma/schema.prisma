@@ -1,0 +1,144 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String    @id @default(uuid()) @db.Uuid
+  authId        String?   @unique @map("auth_id") @db.Uuid
+  name          String?   @db.VarChar(100)
+  email         String    @unique @db.VarChar(150)
+  age           Int?
+  gender        String?   @db.VarChar(10)
+  heightCm      Float?    @map("height_cm")
+  weightKg      Float?    @map("weight_kg")
+  goal          String?   @db.VarChar(20)
+  activityLevel String?   @map("activity_level") @db.VarChar(20)
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  weightHistory  WeightHistory[]
+  userGoals      UserGoal[]
+  meals          Meal[]
+  dailySteps     DailyStep[]
+  dailySummaries DailySummary[]
+
+  @@map("users")
+}
+
+model WeightHistory {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+  weightKg   Float    @map("weight_kg")
+  recordedAt DateTime @default(now()) @map("recorded_at") @db.Date
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, recordedAt(sort: Desc)])
+  @@map("weight_history")
+}
+
+model UserGoal {
+  id             String   @id @default(uuid()) @db.Uuid
+  userId         String   @map("user_id") @db.Uuid
+  targetCalories Int?     @map("target_calories")
+  targetProtein  Float?   @map("target_protein")
+  targetCarbs    Float?   @map("target_carbs")
+  targetFats     Float?   @map("target_fats")
+  isActive       Boolean  @default(true) @map("is_active")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isActive])
+  @@map("user_goals")
+}
+
+model Food {
+  id              String   @id @default(uuid()) @db.Uuid
+  name            String   @db.VarChar(150)
+  caloriesPer100g Float?   @map("calories_per_100g")
+  proteinPer100g  Float?   @map("protein_per_100g")
+  carbsPer100g    Float?   @map("carbs_per_100g")
+  fatsPer100g     Float?   @map("fats_per_100g")
+  fiberPer100g    Float?   @map("fiber_per_100g")
+  sodiumPer100g   Float?   @map("sodium_per_100g")
+  sugarPer100g    Float?   @map("sugar_per_100g")
+  barcode         String?  @db.VarChar(50)
+  source          String   @default("system") @db.VarChar(20)
+  isVerified      Boolean  @default(false) @map("is_verified")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  mealItems MealItem[]
+
+  @@index([name])
+  @@index([barcode])
+  @@map("foods")
+}
+
+model Meal {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+  mealType   String?  @map("meal_type") @db.VarChar(20)
+  mealDate   DateTime @default(now()) @map("meal_date") @db.Date
+  consumedAt DateTime @default(now()) @map("consumed_at")
+
+  user  User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items MealItem[]
+
+  @@index([userId, mealDate])
+  @@map("meals")
+}
+
+model MealItem {
+  id            String @id @default(uuid()) @db.Uuid
+  mealId        String @map("meal_id") @db.Uuid
+  foodId        String @map("food_id") @db.Uuid
+  quantityGrams Float  @map("quantity_grams")
+
+  meal Meal @relation(fields: [mealId], references: [id], onDelete: Cascade)
+  food Food @relation(fields: [foodId], references: [id], onDelete: Restrict)
+
+  @@index([mealId])
+  @@map("meal_items")
+}
+
+model DailyStep {
+  id             String   @id @default(uuid()) @db.Uuid
+  userId         String   @map("user_id") @db.Uuid
+  steps          Int      @default(0)
+  caloriesBurned Float    @default(0) @map("calories_burned")
+  date           DateTime @default(now()) @db.Date
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@index([userId, date(sort: Desc)])
+  @@map("daily_steps")
+}
+
+model DailySummary {
+  id                    String   @id @default(uuid()) @db.Uuid
+  userId                String   @map("user_id") @db.Uuid
+  date                  DateTime @db.Date
+  totalCaloriesConsumed Float    @default(0) @map("total_calories_consumed")
+  totalProtein          Float    @default(0) @map("total_protein")
+  totalCarbs            Float    @default(0) @map("total_carbs")
+  totalFats             Float    @default(0) @map("total_fats")
+  totalCaloriesBurned   Float    @default(0) @map("total_calories_burned")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@index([userId, date(sort: Desc)])
+  @@map("daily_summary")
+}
