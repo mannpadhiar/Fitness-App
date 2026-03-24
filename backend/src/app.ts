@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import routes from "./routes/index.js";
+import authRoutes from "./routes/auth.routes.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 
 dotenv.config();
@@ -17,6 +18,9 @@ app.get("/api/health", (_req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
+// Auth routes (public — no JWT required)
+app.use("/api/auth", authRoutes);
+
 // API Routes
 app.use("/api", routes);
 
@@ -24,3 +28,4 @@ app.use("/api", routes);
 app.use(errorHandler);
 
 export default app;
+

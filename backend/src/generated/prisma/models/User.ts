@@ -43,6 +43,7 @@ export type UserMinAggregateOutputType = {
   authId: string | null
   name: string | null
   email: string | null
+  password: string | null
   age: number | null
   gender: string | null
   heightCm: number | null
@@ -58,6 +59,7 @@ export type UserMaxAggregateOutputType = {
   authId: string | null
   name: string | null
   email: string | null
+  password: string | null
   age: number | null
   gender: string | null
   heightCm: number | null
@@ -73,6 +75,7 @@ export type UserCountAggregateOutputType = {
   authId: number
   name: number
   email: number
+  password: number
   age: number
   gender: number
   heightCm: number
@@ -102,6 +105,7 @@ export type UserMinAggregateInputType = {
   authId?: true
   name?: true
   email?: true
+  password?: true
   age?: true
   gender?: true
   heightCm?: true
@@ -117,6 +121,7 @@ export type UserMaxAggregateInputType = {
   authId?: true
   name?: true
   email?: true
+  password?: true
   age?: true
   gender?: true
   heightCm?: true
@@ -132,6 +137,7 @@ export type UserCountAggregateInputType = {
   authId?: true
   name?: true
   email?: true
+  password?: true
   age?: true
   gender?: true
   heightCm?: true
@@ -234,6 +240,7 @@ export type UserGroupByOutputType = {
   authId: string | null
   name: string | null
   email: string
+  password: string
   age: number | null
   gender: string | null
   heightCm: number | null
@@ -272,6 +279,7 @@ export type UserWhereInput = {
   authId?: Prisma.UuidNullableFilter<"User"> | string | null
   name?: Prisma.StringNullableFilter<"User"> | string | null
   email?: Prisma.StringFilter<"User"> | string
+  password?: Prisma.StringFilter<"User"> | string
   age?: Prisma.IntNullableFilter<"User"> | number | null
   gender?: Prisma.StringNullableFilter<"User"> | string | null
   heightCm?: Prisma.FloatNullableFilter<"User"> | number | null
@@ -292,6 +300,7 @@ export type UserOrderByWithRelationInput = {
   authId?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrder
+  password?: Prisma.SortOrder
   age?: Prisma.SortOrderInput | Prisma.SortOrder
   gender?: Prisma.SortOrderInput | Prisma.SortOrder
   heightCm?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -315,6 +324,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   name?: Prisma.StringNullableFilter<"User"> | string | null
+  password?: Prisma.StringFilter<"User"> | string
   age?: Prisma.IntNullableFilter<"User"> | number | null
   gender?: Prisma.StringNullableFilter<"User"> | string | null
   heightCm?: Prisma.FloatNullableFilter<"User"> | number | null
@@ -335,6 +345,7 @@ export type UserOrderByWithAggregationInput = {
   authId?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrder
+  password?: Prisma.SortOrder
   age?: Prisma.SortOrderInput | Prisma.SortOrder
   gender?: Prisma.SortOrderInput | Prisma.SortOrder
   heightCm?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -358,6 +369,7 @@ export type UserScalarWhereWithAggregatesInput = {
   authId?: Prisma.UuidNullableWithAggregatesFilter<"User"> | string | null
   name?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   email?: Prisma.StringWithAggregatesFilter<"User"> | string
+  password?: Prisma.StringWithAggregatesFilter<"User"> | string
   age?: Prisma.IntNullableWithAggregatesFilter<"User"> | number | null
   gender?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   heightCm?: Prisma.FloatNullableWithAggregatesFilter<"User"> | number | null
@@ -373,6 +385,7 @@ export type UserCreateInput = {
   authId?: string | null
   name?: string | null
   email: string
+  password: string
   age?: number | null
   gender?: string | null
   heightCm?: number | null
@@ -393,6 +406,7 @@ export type UserUncheckedCreateInput = {
   authId?: string | null
   name?: string | null
   email: string
+  password: string
   age?: number | null
   gender?: string | null
   heightCm?: number | null
@@ -413,6 +427,7 @@ export type UserUpdateInput = {
   authId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   heightCm?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -433,6 +448,7 @@ export type UserUncheckedUpdateInput = {
   authId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   heightCm?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -453,6 +469,7 @@ export type UserCreateManyInput = {
   authId?: string | null
   name?: string | null
   email: string
+  password: string
   age?: number | null
   gender?: string | null
   heightCm?: number | null
@@ -468,6 +485,7 @@ export type UserUpdateManyMutationInput = {
   authId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   heightCm?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -483,6 +501,7 @@ export type UserUncheckedUpdateManyInput = {
   authId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   heightCm?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -498,6 +517,7 @@ export type UserCountOrderByAggregateInput = {
   authId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  password?: Prisma.SortOrder
   age?: Prisma.SortOrder
   gender?: Prisma.SortOrder
   heightCm?: Prisma.SortOrder
@@ -519,6 +539,7 @@ export type UserMaxOrderByAggregateInput = {
   authId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  password?: Prisma.SortOrder
   age?: Prisma.SortOrder
   gender?: Prisma.SortOrder
   heightCm?: Prisma.SortOrder
@@ -534,6 +555,7 @@ export type UserMinOrderByAggregateInput = {
   authId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  password?: Prisma.SortOrder
   age?: Prisma.SortOrder
   gender?: Prisma.SortOrder
   heightCm?: Prisma.SortOrder
@@ -658,6 +680,7 @@ export type UserCreateWithoutWeightHistoryInput = {
   authId?: string | null
   name?: string | null
   email: string
+  password: string
   age?: number | null
   gender?: string | null
   heightCm?: number | null
@@ -677,6 +700,7 @@ export type UserUncheckedCreateWithoutWeightHistoryInput = {
   authId?: string | null
   name?: string | null
   email: string
+  password: string
   age?: number | null
   gender?: string | null
   heightCm?: number | null
@@ -712,6 +736,7 @@ export type UserUpdateWithoutWeightHistoryInput = {
   authId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   heightCm?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -731,6 +756,7 @@ export type UserUncheckedUpdateWithoutWeightHistoryInput = {
   authId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   heightCm?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -750,6 +776,7 @@ export type UserCreateWithoutUserGoalsInput = {
   authId?: string | null
   name?: string | null
   email: string
+  password: string
   age?: number | null
   gender?: string | null
   heightCm?: number | null
@@ -769,6 +796,7 @@ export type UserUncheckedCreateWithoutUserGoalsInput = {
   authId?: string | null
   name?: string | null
   email: string
+  password: string
   age?: number | null
   gender?: string | null
   heightCm?: number | null
@@ -804,6 +832,7 @@ export type UserUpdateWithoutUserGoalsInput = {
   authId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   heightCm?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -823,6 +852,7 @@ export type UserUncheckedUpdateWithoutUserGoalsInput = {
   authId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   heightCm?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -842,6 +872,7 @@ export type UserCreateWithoutMealsInput = {
   authId?: string | null
   name?: string | null
   email: string
+  password: string
   age?: number | null
   gender?: string | null
   heightCm?: number | null
@@ -861,6 +892,7 @@ export type UserUncheckedCreateWithoutMealsInput = {
   authId?: string | null
   name?: string | null
   email: string
+  password: string
   age?: number | null
   gender?: string | null
   heightCm?: number | null
@@ -896,6 +928,7 @@ export type UserUpdateWithoutMealsInput = {
   authId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   heightCm?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -915,6 +948,7 @@ export type UserUncheckedUpdateWithoutMealsInput = {
   authId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   heightCm?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -934,6 +968,7 @@ export type UserCreateWithoutDailyStepsInput = {
   authId?: string | null
   name?: string | null
   email: string
+  password: string
   age?: number | null
   gender?: string | null
   heightCm?: number | null
@@ -953,6 +988,7 @@ export type UserUncheckedCreateWithoutDailyStepsInput = {
   authId?: string | null
   name?: string | null
   email: string
+  password: string
   age?: number | null
   gender?: string | null
   heightCm?: number | null
@@ -988,6 +1024,7 @@ export type UserUpdateWithoutDailyStepsInput = {
   authId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   heightCm?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1007,6 +1044,7 @@ export type UserUncheckedUpdateWithoutDailyStepsInput = {
   authId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   heightCm?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1026,6 +1064,7 @@ export type UserCreateWithoutDailySummariesInput = {
   authId?: string | null
   name?: string | null
   email: string
+  password: string
   age?: number | null
   gender?: string | null
   heightCm?: number | null
@@ -1045,6 +1084,7 @@ export type UserUncheckedCreateWithoutDailySummariesInput = {
   authId?: string | null
   name?: string | null
   email: string
+  password: string
   age?: number | null
   gender?: string | null
   heightCm?: number | null
@@ -1080,6 +1120,7 @@ export type UserUpdateWithoutDailySummariesInput = {
   authId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   heightCm?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1099,6 +1140,7 @@ export type UserUncheckedUpdateWithoutDailySummariesInput = {
   authId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   heightCm?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1185,6 +1227,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   authId?: boolean
   name?: boolean
   email?: boolean
+  password?: boolean
   age?: boolean
   gender?: boolean
   heightCm?: boolean
@@ -1206,6 +1249,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   authId?: boolean
   name?: boolean
   email?: boolean
+  password?: boolean
   age?: boolean
   gender?: boolean
   heightCm?: boolean
@@ -1221,6 +1265,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   authId?: boolean
   name?: boolean
   email?: boolean
+  password?: boolean
   age?: boolean
   gender?: boolean
   heightCm?: boolean
@@ -1236,6 +1281,7 @@ export type UserSelectScalar = {
   authId?: boolean
   name?: boolean
   email?: boolean
+  password?: boolean
   age?: boolean
   gender?: boolean
   heightCm?: boolean
@@ -1246,7 +1292,7 @@ export type UserSelectScalar = {
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "authId" | "name" | "email" | "age" | "gender" | "heightCm" | "weightKg" | "goal" | "activityLevel" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "authId" | "name" | "email" | "password" | "age" | "gender" | "heightCm" | "weightKg" | "goal" | "activityLevel" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   weightHistory?: boolean | Prisma.User$weightHistoryArgs<ExtArgs>
   userGoals?: boolean | Prisma.User$userGoalsArgs<ExtArgs>
@@ -1272,6 +1318,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     authId: string | null
     name: string | null
     email: string
+    password: string
     age: number | null
     gender: string | null
     heightCm: number | null
@@ -1712,6 +1759,7 @@ export interface UserFieldRefs {
   readonly authId: Prisma.FieldRef<"User", 'String'>
   readonly name: Prisma.FieldRef<"User", 'String'>
   readonly email: Prisma.FieldRef<"User", 'String'>
+  readonly password: Prisma.FieldRef<"User", 'String'>
   readonly age: Prisma.FieldRef<"User", 'Int'>
   readonly gender: Prisma.FieldRef<"User", 'String'>
   readonly heightCm: Prisma.FieldRef<"User", 'Float'>
