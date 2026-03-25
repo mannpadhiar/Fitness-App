@@ -4,7 +4,7 @@ import 'package:fitness_app/app/modules/auth/views/sign_in_view.dart';
 import 'package:fitness_app/app/modules/onboarding/controllers/onboarding_controller.dart';
 import 'package:fitness_app/app/modules/onboarding/views/onboarding_view.dart';
 import 'package:fitness_app/app/modules/home/controllers/home_controller.dart';
-import 'package:fitness_app/app/modules/home/views/home_view.dart';
+import 'package:fitness_app/app/modules/nav/views/main_nav_view.dart';
 
 class AppPages {
   static final pages = [
@@ -21,7 +21,7 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.home,
-      page: () => const HomeView(),
+      page: () => const MainNavView(),
       binding: BindingsBuilder(() {
         Get.put(HomeController());
       }),
