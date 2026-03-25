@@ -4,8 +4,8 @@ import 'package:fitness_app/app/theme/app_theme.dart';
 import 'package:fitness_app/app/widgets/onboarding_scaffold.dart';
 import 'package:fitness_app/app/modules/onboarding/controllers/onboarding_controller.dart';
 
-class PersonalInfoView extends StatelessWidget {
-  const PersonalInfoView({super.key});
+class PersonalInfoPage extends StatelessWidget {
+  const PersonalInfoPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -13,25 +13,17 @@ class PersonalInfoView extends StatelessWidget {
     final ageTextController = TextEditingController(text: controller.age.value);
 
     final countries = [
-      'India',
-      'United States',
-      'United Kingdom',
-      'Canada',
-      'Australia',
-      'Germany',
-      'France',
-      'Japan',
-      'Brazil',
-      'Other',
+      'India', 'United States', 'United Kingdom', 'Canada',
+      'Australia', 'Germany', 'France', 'Japan', 'Brazil', 'Other',
     ];
 
     return Obx(() => OnboardingScaffold(
           title: 'You',
           currentStep: 3,
-          onNext: controller.submitOnboarding,
-          onBack: controller.goBack,
+          totalSteps: OnboardingController.totalSteps,
+          onNext: controller.nextPage,
+          onBack: controller.previousPage,
           isNextEnabled: controller.isPersonalInfoValid,
-          nextLabel: 'Finish',
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,7 +38,6 @@ class PersonalInfoView extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 const SizedBox(height: 16),
-                // Gender selection
                 Row(
                   children: [
                     Expanded(
@@ -66,35 +57,16 @@ class PersonalInfoView extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    Icon(Icons.info_outline, size: 14, color: AppColors.textMuted),
-                    const SizedBox(width: 4),
-                    Text(
-                      'Which one should I choose?',
-                      style: TextStyle(
-                        color: AppColors.textMuted,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
                 const SizedBox(height: 28),
-                // Age
-                Text(
-                  'How old are you?',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
+                Text('How old are you?',
+                    style: Theme.of(context).textTheme.titleMedium),
                 const SizedBox(height: 8),
                 TextField(
                   controller: ageTextController,
                   keyboardType: TextInputType.number,
                   style: const TextStyle(color: AppColors.textPrimary),
                   onChanged: (value) => controller.age.value = value,
-                  decoration: const InputDecoration(
-                    hintText: 'Enter your age',
-                  ),
+                  decoration: const InputDecoration(hintText: 'Enter your age'),
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -102,11 +74,8 @@ class PersonalInfoView extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 const SizedBox(height: 28),
-                // Country
-                Text(
-                  'Where do you live?',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
+                Text('Where do you live?',
+                    style: Theme.of(context).textTheme.titleMedium),
                 const SizedBox(height: 8),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -120,29 +89,21 @@ class PersonalInfoView extends StatelessWidget {
                       value: controller.country.value.isEmpty
                           ? null
                           : controller.country.value,
-                      hint: const Text(
-                        'Select country',
-                        style: TextStyle(color: AppColors.textMuted),
-                      ),
+                      hint: const Text('Select country',
+                          style: TextStyle(color: AppColors.textMuted)),
                       isExpanded: true,
                       dropdownColor: AppColors.surface,
                       style: const TextStyle(
-                        color: AppColors.textPrimary,
-                        fontSize: 16,
-                      ),
-                      icon: const Icon(
-                        Icons.arrow_drop_down,
-                        color: AppColors.textMuted,
-                      ),
-                      items: countries.map((String country) {
+                          color: AppColors.textPrimary, fontSize: 16),
+                      icon: const Icon(Icons.arrow_drop_down,
+                          color: AppColors.textMuted),
+                      items: countries.map((c) {
                         return DropdownMenuItem<String>(
-                          value: country,
-                          child: Text(country),
-                        );
+                            value: c, child: Text(c));
                       }).toList(),
-                      onChanged: (String? value) {
-                        if (value != null) {
-                          controller.country.value = value;
+                      onChanged: (v) {
+                        if (v != null) {
+                          controller.country.value = v;
                         }
                       },
                     ),
@@ -209,10 +170,7 @@ class _GenderOption extends StatelessWidget {
               child: isSelected
                   ? const Center(
                       child: CircleAvatar(
-                        radius: 4,
-                        backgroundColor: Colors.white,
-                      ),
-                    )
+                          radius: 4, backgroundColor: Colors.white))
                   : null,
             ),
           ],

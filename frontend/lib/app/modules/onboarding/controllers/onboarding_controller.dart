@@ -1,11 +1,14 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:fitness_app/app/routes/app_routes.dart';
+import 'package:fitness_app/app/services/auth_service.dart';
+import 'package:fitness_app/app/services/user_service.dart';
 
 class OnboardingController extends GetxController {
-  // Step tracking
+  final pageController = PageController();
   final currentStep = 0.obs;
-  static const totalSteps = 4;
+  static const totalSteps = 5;
 
   // Screen 1: Name
   final name = ''.obs;
@@ -22,13 +25,12 @@ class OnboardingController extends GetxController {
     'Manage stress',
   ];
 
-  // Screen 4: Activity level
+  // Screen 3: Activity level
   final activityLevel = ''.obs;
   final activityOptions = [
     {
       'title': 'Not Very Active',
-      'subtitle':
-          'Spend most of the day sitting (e.g., bankteller, desk job).',
+      'subtitle': 'Spend most of the day sitting (e.g., bankteller, desk job).',
     },
     {
       'title': 'Lightly Active',
@@ -47,10 +49,17 @@ class OnboardingController extends GetxController {
     },
   ];
 
-  // Screen 5: Personal info
+  // Screen 4: Personal info
   final gender = ''.obs;
   final age = ''.obs;
   final country = ''.obs;
+
+  // Screen 5: Body info
+  final heightCm = ''.obs;
+  final weightKg = ''.obs;
+
+  // Loading state
+  final isSubmitting = false.obs;
 
   // Validation
   bool get isNameValid => name.value.trim().isNotEmpty;
@@ -58,8 +67,9 @@ class OnboardingController extends GetxController {
   bool get isActivityValid => activityLevel.value.isNotEmpty;
   bool get isPersonalInfoValid =>
       gender.value.isNotEmpty && age.value.isNotEmpty;
+  bool get isBodyInfoValid =>
+      heightCm.value.isNotEmpty && weightKg.value.isNotEmpty;
 
-  // Goal selection (up to 3)
   void toggleGoal(String goal) {
     if (selectedGoals.contains(goal)) {
       selectedGoals.remove(goal);
@@ -68,7 +78,7 @@ class OnboardingController extends GetxController {
     }
   }
 
-  // Map goals to backend enum
+  // Map frontend goals to backend enum
   String get primaryGoal {
     if (selectedGoals.contains('Lose weight')) {
       return 'lose';
@@ -80,12 +90,13 @@ class OnboardingController extends GetxController {
     return 'maintain';
   }
 
-  // Map activity to backend enum
+  // Map frontend activity to backend enum
   String get activityLevelEnum {
     switch (activityLevel.value) {
       case 'Not Very Active':
         return 'low';
       case 'Lightly Active':
+        return 'low';
       case 'Active':
         return 'moderate';
       case 'Very Active':
@@ -95,46 +106,76 @@ class OnboardingController extends GetxController {
     }
   }
 
-  // Navigation
-  void goToGoals() {
-    currentStep.value = 1;
-    Get.toNamed(AppRoutes.onboardingGoals);
+  // PageView navigation
+  void nextPage() {
+    if (currentStep.value < totalSteps - 1) {
+      currentStep.value++;
+      pageController.nextPage(
+        duration: const Duration(milliseconds: 350),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
-  void goToGoalsInfo() {
-    currentStep.value = 1;
-    Get.toNamed(AppRoutes.onboardingGoalsInfo);
+  void previousPage() {
+    if (currentStep.value > 0) {
+      currentStep.value--;
+      pageController.previousPage(
+        duration: const Duration(milliseconds: 350),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
-  void goToActivity() {
-    currentStep.value = 2;
-    Get.toNamed(AppRoutes.onboardingActivity);
-  }
-
-  void goToPersonalInfo() {
-    currentStep.value = 3;
-    Get.toNamed(AppRoutes.onboardingPersonalInfo);
-  }
-
-  void goBack() {
-    Get.back();
-  }
-
-  // Submit onboarding data (stub — will connect to backend later)
+  // Submit onboarding → send to backend
   Future<void> submitOnboarding() async {
-    final data = {
-      'name': name.value.trim(),
-      'goal': primaryGoal,
-      'activityLevel': activityLevelEnum,
-      'gender': gender.value.toLowerCase(),
-      'age': int.tryParse(age.value) ?? 25,
-      'country': country.value,
-    };
+    isSubmitting.value = true;
+    try {
+      final userId = await AuthService.getUserId();
+      if (userId == null) {
+        throw Exception('User not authenticated');
+      }
 
-    // TODO: POST to backend /api/users
-    debugPrint('Onboarding data: $data');
+      // Update user profile on backend
+      await UserService.updateUser(userId, {
+        'name': name.value.trim(),
+        'age': int.tryParse(age.value) ?? 25,
+        'gender': gender.value.toLowerCase(),
+        'heightCm': double.tryParse(heightCm.value) ?? 170,
+        'weightKg': double.tryParse(weightKg.value) ?? 70,
+        'goal': primaryGoal,
+        'activityLevel': activityLevelEnum,
+      });
 
-    // Navigate to home
-    Get.offAllNamed(AppRoutes.home);
+      // Also save locally for offline use
+      final box = GetStorage();
+      await box.write('userName', name.value.trim());
+      await box.write('goal', primaryGoal);
+      await box.write('activityLevel', activityLevelEnum);
+      await box.write('gender', gender.value.toLowerCase());
+      await box.write('age', int.tryParse(age.value) ?? 25);
+      await box.write('heightCm', double.tryParse(heightCm.value) ?? 170);
+      await box.write('weightKg', double.tryParse(weightKg.value) ?? 70);
+      await box.write('country', country.value);
+      await box.write('onboardingComplete', true);
+
+      Get.offAllNamed(AppRoutes.home);
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        e.toString().replaceAll('Exception: ', ''),
+        snackPosition: SnackPosition.BOTTOM,
+        colorText: Colors.white,
+        backgroundColor: Colors.red.shade700,
+      );
+    } finally {
+      isSubmitting.value = false;
+    }
+  }
+
+  @override
+  void onClose() {
+    pageController.dispose();
+    super.onClose();
   }
 }

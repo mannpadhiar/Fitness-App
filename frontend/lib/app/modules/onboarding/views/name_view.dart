@@ -4,8 +4,8 @@ import 'package:fitness_app/app/theme/app_theme.dart';
 import 'package:fitness_app/app/widgets/onboarding_scaffold.dart';
 import 'package:fitness_app/app/modules/onboarding/controllers/onboarding_controller.dart';
 
-class NameView extends StatelessWidget {
-  const NameView({super.key});
+class NamePage extends StatelessWidget {
+  const NamePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +15,8 @@ class NameView extends StatelessWidget {
     return Obx(() => OnboardingScaffold(
           title: 'Welcome',
           currentStep: 0,
-          onNext: controller.goToGoals,
+          totalSteps: OnboardingController.totalSteps,
+          onNext: controller.nextPage,
           isNextEnabled: controller.isNameValid,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -30,7 +31,7 @@ class NameView extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
               const SizedBox(height: 32),
-              Text(
+              const Text(
                 'Preferred first name',
                 style: TextStyle(
                   color: AppColors.textSecondary,
@@ -43,9 +44,7 @@ class NameView extends StatelessWidget {
                 style: const TextStyle(color: AppColors.textPrimary),
                 autofocus: true,
                 onChanged: (value) => controller.name.value = value,
-                decoration: const InputDecoration(
-                  hintText: '',
-                ),
+                decoration: const InputDecoration(hintText: ''),
               ),
             ],
           ),

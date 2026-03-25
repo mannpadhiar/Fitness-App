@@ -4,8 +4,8 @@ import 'package:fitness_app/app/widgets/onboarding_scaffold.dart';
 import 'package:fitness_app/app/widgets/option_tile.dart';
 import 'package:fitness_app/app/modules/onboarding/controllers/onboarding_controller.dart';
 
-class GoalsView extends StatelessWidget {
-  const GoalsView({super.key});
+class GoalsPage extends StatelessWidget {
+  const GoalsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,8 +14,9 @@ class GoalsView extends StatelessWidget {
     return Obx(() => OnboardingScaffold(
           title: 'Goals',
           currentStep: 1,
-          onNext: controller.goToGoalsInfo,
-          onBack: controller.goBack,
+          totalSteps: OnboardingController.totalSteps,
+          onNext: controller.nextPage,
+          onBack: controller.previousPage,
           isNextEnabled: controller.isGoalsValid,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

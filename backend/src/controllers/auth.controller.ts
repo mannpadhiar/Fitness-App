@@ -8,6 +8,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "default-secret";
 
 export async function register(req: Request, res: Response) {
   try {
+    console.log(process.env.DATABASE_URL);
     const data = registerSchema.parse(req.body);
     
     // Check if user already exists
@@ -47,9 +48,11 @@ export async function register(req: Request, res: Response) {
   } catch (error: any) {
     if (error.name === "ZodError") {
       res.status(400).json({ error: "Validation failed", details: error.errors });
+      console.log(error);
       return;
     }
     res.status(500).json({ error: error.message });
+    console.log(error);
   }
 }
 
@@ -96,5 +99,6 @@ export async function login(req: Request, res: Response) {
       return;
     }
     res.status(500).json({ error: error.message });
+    console.log(error);
   }
 }
