@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:pedometer_2/pedometer_2.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:fitness_app/app/routes/app_routes.dart';
 import 'package:fitness_app/app/services/auth_service.dart';
 import 'package:fitness_app/app/services/user_service.dart';
@@ -39,9 +41,11 @@ class HomeController extends GetxController {
 
   // Steps
   final steps = 0.obs;
-  final stepsGoal = 10000;
+  final stepsGoal = 8000.obs;
   StreamSubscription<int>? _stepSubscription;
   final pedometer = Pedometer();
+  int _initialStreamSteps = -1; // first value from stepCountStream (since boot)
+  int _baselineDailySteps = 0;  // steps from getStepCount (today so far)
 
   // Loading
   final isLoading = true.obs;
@@ -50,10 +54,157 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
     _loadFromBackend();
-    _initPedometer();
+    _requestPermissionAndStartPedometer();
   }
 
-  // Fetch user profile + active goal + daily summary from backend
+  // --- Permission + Pedometer ---
+  Future<void> _requestPermissionAndStartPedometer() async {
+    try {
+      PermissionStatus status;
+      if (Platform.isAndroid) {
+        status = await Permission.activityRecognition.request();
+      } else {
+        status = await Permission.sensors.request();
+      }
+
+      if (status.isGranted) {
+        await _initPedometer();
+      } else {
+        debugPrint('Activity permission denied: $status');
+        // Still try — some devices work without explicit grant
+        await _initPedometer();
+      }
+    } catch (e) {
+      debugPrint('Permission request failed: $e');
+      await _initPedometer();
+    }
+  }
+
+  Future<void> _initPedometer() async {
+    // 1. Get today's steps so far using getStepCount (accurate daily total)
+    try {
+      final now = DateTime.now();
+      final todayStart = DateTime(now.year, now.month, now.day);
+      _baselineDailySteps = await pedometer.getStepCount(
+        from: todayStart,
+        to: now,
+      );
+      steps.value = _baselineDailySteps;
+      _updateExerciseCalories();
+      debugPrint('Baseline daily steps: $_baselineDailySteps');
+    } catch (e) {
+      debugPrint('getStepCount failed: $e');
+      _baselineDailySteps = 0;
+    }
+
+    // 2. Listen to live stream for real-time updates
+    //    The stream returns steps since last boot, so we track the delta
+    _initialStreamSteps = -1;
+    _stepSubscription = pedometer.stepCountStream().listen(
+      (stepCount) {
+        if (_initialStreamSteps == -1) {
+          // First stream event — this is the "since boot" baseline
+          _initialStreamSteps = stepCount;
+          // Don't update steps.value yet — baseline already has the right count
+          debugPrint('Stream baseline (since boot): $_initialStreamSteps');
+        } else {
+          // Delta = how many steps since we started listening
+          final delta = stepCount - _initialStreamSteps;
+          steps.value = _baselineDailySteps + delta;
+          _updateExerciseCalories();
+
+          // Sync to backend periodically
+          _syncStepsToBackend(steps.value);
+        }
+      },
+      onError: (error) {
+        debugPrint('Pedometer stream error: $error');
+      },
+    );
+  }
+
+  void _updateExerciseCalories() {
+    // Weight-aware formula: calories per step ≈ 0.0005 × weight(kg)
+    final calPerStep = 0.0005 * weightKg.value;
+    exerciseCalories.value = (steps.value * calPerStep).round();
+  }
+
+  // --- Dynamic Steps Goal Calculation ---
+  void _calculateStepsGoal() {
+    final weight = weightKg.value;
+    final height = heightCm.value;
+    final userAge = age.value;
+    final userGender = gender.value;
+    final userGoal = goal.value;
+    final activity = activityLevel.value;
+
+    // 1. BMR (Mifflin-St Jeor)
+    final base = 10 * weight + 6.25 * height - 5 * userAge;
+    final bmr = userGender == 'male' ? base + 5 : base - 161;
+
+    // 2. Activity multiplier
+    double activityMultiplier;
+    switch (activity) {
+      case 'moderate':
+        activityMultiplier = 1.55;
+        break;
+      case 'high':
+        activityMultiplier = 1.725;
+        break;
+      default: // 'low'
+        activityMultiplier = 1.2;
+    }
+
+    // 3. TDEE
+    final tdee = bmr * activityMultiplier;
+
+    // 4. Goal-based calorie adjustment
+    double calorieAdjustment;
+    switch (userGoal) {
+      case 'lose':
+        calorieAdjustment = -400; // deficit to burn via walking
+        break;
+      case 'gain':
+        calorieAdjustment = 200; // small surplus, less walking needed
+        break;
+      default: // 'maintain'
+        calorieAdjustment = 0;
+    }
+
+    // 5. Calculate target extra calories to burn through steps
+    //    For 'lose': user needs to burn extra 400 kcal through activity
+    //    For 'maintain': moderate activity target
+    //    For 'gain': lighter step target
+    double targetStepCalories;
+    switch (userGoal) {
+      case 'lose':
+        // Burn the deficit through walking
+        targetStepCalories = calorieAdjustment.abs();
+        break;
+      case 'gain':
+        // Light walking — just enough for health
+        targetStepCalories = 150;
+        break;
+      default: // 'maintain'
+        // Moderate walking
+        targetStepCalories = 250;
+    }
+
+    // 6. Calories per step = 0.0005 × weight(kg)
+    final calPerStep = 0.0005 * weight;
+
+    // 7. Steps = target calories / cal per step
+    int calculatedSteps = (targetStepCalories / calPerStep).round();
+
+    // 8. Clamp to reasonable range
+    calculatedSteps = calculatedSteps.clamp(4000, 15000);
+
+    stepsGoal.value = calculatedSteps;
+    debugPrint('Dynamic steps goal: $calculatedSteps '
+        '(BMR=$bmr, TDEE=$tdee, goal=$userGoal, calPerStep=$calPerStep)');
+  }
+
+  // --- Backend Data Loading ---
   Future<void> _loadFromBackend() async {
     try {
       final userId = await AuthService.getUserId();
@@ -84,6 +235,9 @@ class HomeController extends GetxController {
       } else {
         _calculateTargetCaloriesLocally();
       }
+
+      // Calculate dynamic steps goal based on user profile
+      _calculateStepsGoal();
 
       // Fetch today's daily summary
       final now = DateTime.now();
@@ -125,6 +279,7 @@ class HomeController extends GetxController {
     activityLevel.value = box.read('activityLevel') ?? 'low';
     country.value = box.read('country') ?? '';
     _calculateTargetCaloriesLocally();
+    _calculateStepsGoal();
     isLoading.value = false;
   }
 
@@ -171,22 +326,7 @@ class HomeController extends GetxController {
     targetCalories.value = tdee.round();
   }
 
-  // --- Pedometer ---
-  void _initPedometer() {
-    _stepSubscription = pedometer.stepCountStream().listen(
-      (stepCount) {
-        steps.value = stepCount;
-        exerciseCalories.value = (stepCount * 0.04).round();
-
-        // Sync steps to backend periodically
-        _syncStepsToBackend(stepCount);
-      },
-      onError: (error) {
-        steps.value = 0;
-      },
-    );
-  }
-
+  // --- Step Sync ---
   Timer? _syncTimer;
   void _syncStepsToBackend(int stepCount) {
     _syncTimer?.cancel();

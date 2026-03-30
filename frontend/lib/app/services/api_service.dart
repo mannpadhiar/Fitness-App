@@ -1,12 +1,11 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  // Android emulator → localhost = 10.0.2.2
-  // For physical device on same network, use your PC's IP
-  // For iOS simulator, use localhost
-  static const String baseUrl = 'http://localhost:3000/api';
+
+  static String baseUrl = dotenv.env['BASE_URL']!;
 
   static Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();

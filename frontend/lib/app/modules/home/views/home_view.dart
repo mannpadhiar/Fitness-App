@@ -147,122 +147,131 @@ class HomeView extends StatelessWidget {
                 const SizedBox(height: 20),
 
                 // --- Steps & Exercise Cards ---
-                Row(
-                  children: [
-                    // Steps card
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: AppColors.surface,
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.2),
-                              blurRadius: 8,
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text('Steps',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium),
-                                const Icon(Icons.directions_walk,
-                                    color: AppColors.success, size: 20),
-                              ],
-                            ),
-                            const SizedBox(height: 12),
-                            Text(
-                              '${c.steps.value}',
-                              style: const TextStyle(
-                                color: AppColors.textPrimary,
-                                fontSize: 28,
-                                fontWeight: FontWeight.bold,
+                IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Steps card
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: AppColors.surface,
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.2),
+                                blurRadius: 8,
                               ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              '/ ${c.stepsGoal} goal',
-                              style: Theme.of(context).textTheme.bodySmall,
-                            ),
-                            const SizedBox(height: 10),
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(4),
-                              child: LinearProgressIndicator(
-                                value: (c.steps.value / c.stepsGoal)
-                                    .clamp(0.0, 1.0),
-                                backgroundColor: AppColors.surfaceLight,
-                                valueColor: const AlwaysStoppedAnimation(
-                                    AppColors.success),
-                                minHeight: 6,
+                            ],
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('Steps',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium),
+                                  const Icon(Icons.directions_walk,
+                                      color: AppColors.success, size: 20),
+                                ],
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    // Exercise card
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: AppColors.surface,
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.2),
-                              blurRadius: 8,
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text('Exercise',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium),
-                                const Icon(Icons.local_fire_department,
-                                    color: AppColors.error, size: 20),
-                              ],
-                            ),
-                            const SizedBox(height: 12),
-                            Text(
-                              '${c.exerciseCalories.value}',
-                              style: const TextStyle(
-                                color: AppColors.textPrimary,
-                                fontSize: 28,
-                                fontWeight: FontWeight.bold,
+                              const SizedBox(height: 12),
+                              Text(
+                                '${c.steps.value}',
+                                style: const TextStyle(
+                                  color: AppColors.textPrimary,
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text('cal burned',
-                                style: Theme.of(context).textTheme.bodySmall),
-                            const SizedBox(height: 10),
-                            Text(
-                              c.steps.value > 0
-                                  ? '🚶 Active today'
-                                  : '📡 Tracking...',
-                              style: TextStyle(
-                                color: AppColors.textSecondary,
-                                fontSize: 13,
+                              const SizedBox(height: 4),
+                              Text(
+                                '/ ${c.stepsGoal.value} goal',
+                                style: Theme.of(context).textTheme.bodySmall,
                               ),
-                            ),
-                          ],
+                              const SizedBox(height: 10),
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(4),
+                                child: LinearProgressIndicator(
+                                  value: c.stepsGoal.value > 0
+                                      ? (c.steps.value / c.stepsGoal.value)
+                                          .clamp(0.0, 1.0)
+                                      : 0.0,
+                                  backgroundColor: AppColors.surfaceLight,
+                                  valueColor: const AlwaysStoppedAnimation(
+                                      AppColors.success),
+                                  minHeight: 6,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 12),
+                      // Exercise card
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: AppColors.surface,
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.2),
+                                blurRadius: 8,
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('Exercise',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium),
+                                  const Icon(Icons.local_fire_department,
+                                      color: AppColors.error, size: 20),
+                                ],
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                '${c.exerciseCalories.value}',
+                                style: const TextStyle(
+                                  color: AppColors.textPrimary,
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text('kcal burned',
+                                  style: Theme.of(context).textTheme.bodySmall),
+                              const SizedBox(height: 10),
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(4),
+                                child: LinearProgressIndicator(
+                                  value: c.stepsGoal.value > 0
+                                      ? (c.steps.value / c.stepsGoal.value)
+                                          .clamp(0.0, 1.0)
+                                      : 0.0,
+                                  backgroundColor: AppColors.surfaceLight,
+                                  valueColor: const AlwaysStoppedAnimation(
+                                      AppColors.error),
+                                  minHeight: 6,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 20),
 
