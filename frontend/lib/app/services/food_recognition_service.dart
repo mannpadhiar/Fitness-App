@@ -21,13 +21,8 @@ class FoodRecognitionService {
       debugPrint('Image encoded to base64 ($base64Image)');
 
       // Build JSON body
-      final requestBody =  jsonEncode({
-        "data": [
-          {
-            "data": base64Image,
-            "name": "image.jpg"
-          }
-        ]
+      final requestBody = jsonEncode({
+        "data": [base64Image]
       });
 
       // Use dart:io HttpClient directly to avoid http package _Namespace issue
