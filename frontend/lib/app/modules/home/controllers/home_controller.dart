@@ -9,6 +9,7 @@ import 'package:fitness_app/app/routes/app_routes.dart';
 import 'package:fitness_app/app/services/auth_service.dart';
 import 'package:fitness_app/app/services/user_service.dart';
 import 'package:fitness_app/app/services/daily_service.dart';
+import 'package:fitness_app/app/services/data_preload_service.dart';
 
 class HomeController extends GetxController {
   final box = GetStorage();
@@ -53,8 +54,72 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _loadFromBackend();
+    _loadData();
     _requestPermissionAndStartPedometer();
+  }
+
+  // --- Load data: prefer preloaded, fallback to backend/local ---
+  Future<void> _loadData() async {
+    try {
+      final preload = Get.find<DataPreloadService>();
+
+      if (preload.isPreloaded && preload.userData != null) {
+        // Use preloaded data — instant, no network call
+        _applyUserData(preload.userData!);
+        _applyDailySummary(preload.dailySummary);
+        _saveToLocalStorage();
+      } else {
+        // Fallback: fetch from backend directly
+        await _loadFromBackend();
+      }
+    } catch (e) {
+      debugPrint('Preloaded data not available, fetching: $e');
+      await _loadFromBackend();
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  /// Apply user profile data from a Map (works with both preloaded and fresh data)
+  void _applyUserData(Map<String, dynamic> userData) {
+    userName.value = userData['name'] ?? 'User';
+    userEmail.value = userData['email'] ?? '';
+    gender.value = userData['gender'] ?? 'male';
+    age.value = userData['age'] ?? 25;
+    heightCm.value = (userData['heightCm'] ?? 170).toDouble();
+    weightKg.value = (userData['weightKg'] ?? 70).toDouble();
+    goal.value = userData['goal'] ?? 'maintain';
+    activityLevel.value = userData['activityLevel'] ?? 'low';
+
+    // Read active goal (backend auto-creates this on user creation/update)
+    final goals = userData['userGoals'] as List<dynamic>? ?? [];
+    if (goals.isNotEmpty) {
+      final activeGoal = goals.first as Map<String, dynamic>;
+      targetCalories.value = activeGoal['targetCalories'] ?? 2000;
+      targetProtein.value = (activeGoal['targetProtein'] ?? 0).round();
+      targetCarbs.value = (activeGoal['targetCarbs'] ?? 0).round();
+      targetFats.value = (activeGoal['targetFats'] ?? 0).round();
+    } else {
+      _calculateTargetCaloriesLocally();
+    }
+
+    // Calculate dynamic steps goal based on user profile
+    _calculateStepsGoal();
+  }
+
+  /// Apply daily summary data from a Map
+  void _applyDailySummary(Map<String, dynamic>? summary) {
+    if (summary == null) return;
+    foodCalories.value =
+        (summary['totalCaloriesConsumed'] ?? 0).round();
+    totalProtein.value =
+        (summary['totalProtein'] ?? 0).toDouble();
+    totalCarbs.value =
+        (summary['totalCarbs'] ?? 0).toDouble();
+    totalFats.value =
+        (summary['totalFats'] ?? 0).toDouble();
+    exerciseCalories.value =
+        (summary['totalCaloriesBurned'] ?? 0).round();
   }
 
   // --- Permission + Pedometer ---
@@ -204,7 +269,7 @@ class HomeController extends GetxController {
         '(BMR=$bmr, TDEE=$tdee, goal=$userGoal, calPerStep=$calPerStep)');
   }
 
-  // --- Backend Data Loading ---
+  // --- Backend Data Loading (fallback when preloaded data not available) ---
   Future<void> _loadFromBackend() async {
     try {
       final userId = await AuthService.getUserId();
@@ -215,29 +280,7 @@ class HomeController extends GetxController {
 
       // Fetch user profile (includes active goal)
       final userData = await UserService.getUser(userId);
-      userName.value = userData['name'] ?? 'User';
-      userEmail.value = userData['email'] ?? '';
-      gender.value = userData['gender'] ?? 'male';
-      age.value = userData['age'] ?? 25;
-      heightCm.value = (userData['heightCm'] ?? 170).toDouble();
-      weightKg.value = (userData['weightKg'] ?? 70).toDouble();
-      goal.value = userData['goal'] ?? 'maintain';
-      activityLevel.value = userData['activityLevel'] ?? 'low';
-
-      // Read active goal (backend auto-creates this on user creation/update)
-      final goals = userData['userGoals'] as List<dynamic>? ?? [];
-      if (goals.isNotEmpty) {
-        final activeGoal = goals.first as Map<String, dynamic>;
-        targetCalories.value = activeGoal['targetCalories'] ?? 2000;
-        targetProtein.value = (activeGoal['targetProtein'] ?? 0).round();
-        targetCarbs.value = (activeGoal['targetCarbs'] ?? 0).round();
-        targetFats.value = (activeGoal['targetFats'] ?? 0).round();
-      } else {
-        _calculateTargetCaloriesLocally();
-      }
-
-      // Calculate dynamic steps goal based on user profile
-      _calculateStepsGoal();
+      _applyUserData(userData);
 
       // Fetch today's daily summary
       final now = DateTime.now();
@@ -245,16 +288,7 @@ class HomeController extends GetxController {
           '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
       try {
         final summary = await DailyService.getDailySummary(userId, dateStr);
-        foodCalories.value =
-            (summary['totalCaloriesConsumed'] ?? 0).round();
-        totalProtein.value =
-            (summary['totalProtein'] ?? 0).toDouble();
-        totalCarbs.value =
-            (summary['totalCarbs'] ?? 0).toDouble();
-        totalFats.value =
-            (summary['totalFats'] ?? 0).toDouble();
-        exerciseCalories.value =
-            (summary['totalCaloriesBurned'] ?? 0).round();
+        _applyDailySummary(summary);
       } catch (e) {
         debugPrint('Daily summary not available: $e');
       }
@@ -264,8 +298,6 @@ class HomeController extends GetxController {
     } catch (e) {
       debugPrint('Backend fetch failed, using local storage: $e');
       _loadFromLocalStorage();
-    } finally {
-      isLoading.value = false;
     }
   }
 
@@ -280,7 +312,6 @@ class HomeController extends GetxController {
     country.value = box.read('country') ?? '';
     _calculateTargetCaloriesLocally();
     _calculateStepsGoal();
-    isLoading.value = false;
   }
 
   void _saveToLocalStorage() {
@@ -356,6 +387,11 @@ class HomeController extends GetxController {
 
   // --- Logout ---
   void logout() {
+    // Clear preloaded data
+    try {
+      Get.find<DataPreloadService>().clear();
+    } catch (_) {}
+
     AuthService.logout();
     box.erase();
     Get.offAllNamed(AppRoutes.signIn);

@@ -292,13 +292,19 @@ class HomeView extends StatelessWidget {
                       Row(
                         children: [
                           _MacroTile(
-                              label: 'Protein', amount: '0g', color: Colors.purple),
+                              label: 'Protein',
+                              amount: '${c.totalProtein.value.toStringAsFixed(1)}g',
+                              color: Colors.purple),
                           const SizedBox(width: 8),
                           _MacroTile(
-                              label: 'Carbs', amount: '0g', color: Colors.amber),
+                              label: 'Carbs',
+                              amount: '${c.totalCarbs.value.toStringAsFixed(1)}g',
+                              color: Colors.amber),
                           const SizedBox(width: 8),
                           _MacroTile(
-                              label: 'Fats', amount: '0g', color: Colors.green),
+                              label: 'Fats',
+                              amount: '${c.totalFats.value.toStringAsFixed(1)}g',
+                              color: Colors.green),
                         ],
                       ),
                     ],
