@@ -18,10 +18,30 @@ class HomeView extends StatelessWidget {
         title: Obx(() => Text('Hey, ${c.userName.value} 👋')),
         automaticallyImplyLeading: false,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () => scaffoldKey.currentState?.openEndDrawer(),
-          ),
+          Obx(() => GestureDetector(
+                onTap: () => scaffoldKey.currentState?.openEndDrawer(),
+                child: Container(
+                  margin: const EdgeInsets.only(right: 12),
+                  width: 34,
+                  height: 34,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.primary,
+                  ),
+                  child: Center(
+                    child: Text(
+                      c.userName.value.isNotEmpty
+                          ? c.userName.value[0].toUpperCase()
+                          : 'U',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ),
+              )),
         ],
       ),
       endDrawer: _AccountDrawer(controller: c),

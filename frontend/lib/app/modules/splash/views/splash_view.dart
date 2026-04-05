@@ -132,7 +132,7 @@ class _SplashViewState extends State<SplashView>
                         Obx(() => _controller.isLoadingComplete.value
                             ? const Icon(
                                 Icons.check_circle_rounded,
-                                color: Colors.white,
+                                color: AppColors.background,
                                 size: 44,
                               )
                             : const SizedBox(

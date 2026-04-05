@@ -86,3 +86,10 @@ export const addWeightSchema = z.object({
   weightKg: z.number().positive(),
   recordedAt: z.string().optional(), // ISO date string
 });
+
+export const createExerciseSchema = z.object({
+  name: z.string().max(150),
+  durationMinutes: z.number().int().min(0).optional(),
+  caloriesBurned: z.number().min(0),
+  exerciseDate: z.string().optional(), // ISO date string
+});

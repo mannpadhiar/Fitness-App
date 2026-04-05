@@ -30,6 +30,7 @@ model User {
   meals          Meal[]
   dailySteps     DailyStep[]
   dailySummaries DailySummary[]
+  exercises      Exercise[]
 
   @@map("users")
 }
@@ -142,4 +143,19 @@ model DailySummary {
   @@unique([userId, date])
   @@index([userId, date(sort: Desc)])
   @@map("daily_summary")
+}
+
+model Exercise {
+  id              String   @id @default(uuid()) @db.Uuid
+  userId          String   @map("user_id") @db.Uuid
+  name            String   @db.VarChar(150)
+  durationMinutes Int      @default(0) @map("duration_minutes")
+  caloriesBurned  Float    @default(0) @map("calories_burned")
+  exerciseDate    DateTime @default(now()) @map("exercise_date") @db.Date
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, exerciseDate])
+  @@map("exercises")
 }

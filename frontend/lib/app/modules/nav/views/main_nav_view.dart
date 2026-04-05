@@ -6,7 +6,7 @@ import 'package:fitness_app/app/theme/app_theme.dart';
 import 'package:fitness_app/app/modules/home/views/home_view.dart';
 import 'package:fitness_app/app/modules/diary/views/diary_view.dart';
 import 'package:fitness_app/app/modules/progress/views/progress_view.dart';
-import 'package:fitness_app/app/modules/profile/views/profile_view.dart';
+import 'package:fitness_app/app/modules/exercise/views/exercise_view.dart';
 import 'package:fitness_app/app/modules/diary/controllers/diary_controller.dart';
 import 'package:fitness_app/app/services/food_recognition_service.dart';
 
@@ -31,7 +31,7 @@ class MainNavView extends StatelessWidget {
       DiaryView(),
       SizedBox(),
       ProgressView(),
-      ProfileView(),
+      ExerciseView(),
     ];
 
     return Obx(
@@ -95,9 +95,9 @@ class MainNavView extends StatelessWidget {
                     onTap: () => controller.changeTab(3),
                   ),
                   _NavItem(
-                    icon: Icons.person_outlined,
-                    activeIcon: Icons.person,
-                    label: 'Profile',
+                    icon: Icons.fitness_center_outlined,
+                    activeIcon: Icons.fitness_center,
+                    label: 'Exercise',
                     isActive: controller.currentIndex.value == 4,
                     onTap: () => controller.changeTab(4),
                   ),
