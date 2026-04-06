@@ -178,6 +178,25 @@ class DiaryController extends GetxController {
     }
   }
 
+  /// Delete a meal by its ID
+  Future<void> deleteMeal(String mealId) async {
+    try {
+      final response = await ApiService.delete('/meals/$mealId');
+      if (response.statusCode == 204) {
+        await loadMeals();
+        Get.snackbar('Deleted', 'Meal entry removed',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: AppColors.success.withValues(alpha: 0.8),
+            colorText: Colors.white);
+      }
+    } catch (e) {
+      Get.snackbar('Error', e.toString().replaceAll('Exception: ', ''),
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: AppColors.error.withValues(alpha: 0.8),
+          colorText: Colors.white);
+    }
+  }
+
   void previousDay() {
     selectedDate.value =
         selectedDate.value.subtract(const Duration(days: 1));

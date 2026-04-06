@@ -15,7 +15,15 @@ class HomeView extends StatelessWidget {
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
-        title: Obx(() => Text('Hey, ${c.userName.value} 👋')),
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Image.asset(
+            'assets/striveLogo.png',
+            width: 34,
+            height: 34,
+          ),
+        ),
+        title: Obx(() => Text('Let\'s crush it, ${c.userName.value}! 💪')),
         automaticallyImplyLeading: false,
         actions: [
           Obx(() => GestureDetector(
@@ -60,7 +68,9 @@ class HomeView extends StatelessWidget {
               children: [
                 // Greeting & date
                 Text(c.greeting,
-                    style: Theme.of(context).textTheme.bodyMedium),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w500,
+                    )),
                 const SizedBox(height: 4),
                 Text(
                   'Today • ${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}',
@@ -330,31 +340,6 @@ class HomeView extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: 20),
-
-                // --- Quick Actions ---
-                Text('Quick Actions',
-                    style: Theme.of(context).textTheme.titleLarge),
-                const SizedBox(height: 12),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      _ActionCard(
-                          icon: Icons.fastfood,
-                          title: 'Log Meal',
-                          subtitle: 'Add food'),
-                      _ActionCard(
-                          icon: Icons.timer,
-                          title: 'Workout',
-                          subtitle: 'Start'),
-                      _ActionCard(
-                          icon: Icons.water_drop,
-                          title: 'Water',
-                          subtitle: 'Log intake'),
-                    ],
-                  ),
-                ),
                 const SizedBox(height: 28),
               ],
             ),
@@ -448,47 +433,7 @@ class _MacroTile extends StatelessWidget {
   }
 }
 
-// --- Quick action card ---
-class _ActionCard extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
 
-  const _ActionCard({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 120,
-      margin: const EdgeInsets.only(right: 12),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: AppColors.surfaceLight,
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icon, size: 24, color: AppColors.primary),
-          const SizedBox(height: 12),
-          Text(title,
-              style: const TextStyle(
-                  color: AppColors.textSecondary, fontSize: 12)),
-          const SizedBox(height: 4),
-          Text(subtitle,
-              style: const TextStyle(
-                  color: AppColors.textPrimary,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600)),
-        ],
-      ),
-    );
-  }
-}
 
 // --- Account Drawer ---
 class _AccountDrawer extends StatelessWidget {

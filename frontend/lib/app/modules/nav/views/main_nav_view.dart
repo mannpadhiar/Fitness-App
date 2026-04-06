@@ -186,13 +186,6 @@ class MainNavView extends StatelessWidget {
                   subtitle: 'Track a workout',
                   onTap: () => Navigator.pop(context),
                 ),
-                const SizedBox(height: 12),
-                _QuickAddOption(
-                  icon: Icons.water_drop,
-                  label: 'Log Water',
-                  subtitle: 'Track water intake',
-                  onTap: () => Navigator.pop(context),
-                ),
                 const SizedBox(height: 16),
               ],
             ),
@@ -345,9 +338,10 @@ class MainNavView extends StatelessWidget {
               left: 20,
               right: 20,
               top: 20,
-              bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,
+              bottom: 20,
             ),
             child: SingleChildScrollView(
+              reverse: true,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [

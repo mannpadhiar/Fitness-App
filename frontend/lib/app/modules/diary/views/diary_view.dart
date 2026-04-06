@@ -132,15 +132,65 @@ class DiaryView extends StatelessWidget {
                           itemCount: c.meals.length,
                           itemBuilder: (context, index) {
                             final meal = c.meals[index];
+                            final mealId = meal['id'] as String? ?? '';
                             final mealType =
                                 (meal['mealType'] ?? 'snack') as String;
                             final items =
                                 (meal['items'] as List<dynamic>?) ?? [];
-                            return _MealCard(
-                              mealType: mealType,
-                              items: items,
-                              onItemTap: (item) =>
-                                  _showFoodDetailSheet(context, item),
+                            return Dismissible(
+                              key: Key(mealId),
+                              direction: DismissDirection.endToStart,
+                              background: Container(
+                                alignment: Alignment.centerRight,
+                                padding: const EdgeInsets.only(right: 20),
+                                margin: const EdgeInsets.only(bottom: 10),
+                                decoration: BoxDecoration(
+                                  color: AppColors.error,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: const Icon(Icons.delete_outline,
+                                    color: Colors.white),
+                              ),
+                              confirmDismiss: (_) async {
+                                return await Get.dialog<bool>(
+                                  AlertDialog(
+                                    backgroundColor: AppColors.surface,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(16)),
+                                    title: const Text('Delete Entry',
+                                        style: TextStyle(
+                                            color: AppColors.textPrimary)),
+                                    content: const Text(
+                                        'Are you sure you want to delete this meal?',
+                                        style: TextStyle(
+                                            color: AppColors.textSecondary)),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () => Get.back(result: false),
+                                        child: const Text('Cancel',
+                                            style: TextStyle(
+                                                color: AppColors.textMuted)),
+                                      ),
+                                      ElevatedButton(
+                                        onPressed: () => Get.back(result: true),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: AppColors.error,
+                                        ),
+                                        child: const Text('Delete',
+                                            style:
+                                                TextStyle(color: Colors.white)),
+                                      ),
+                                    ],
+                                  ),
+                                ) ?? false;
+                              },
+                              onDismissed: (_) => c.deleteMeal(mealId),
+                              child: _MealCard(
+                                mealType: mealType,
+                                items: items,
+                                onItemTap: (item) =>
+                                    _showFoodDetailSheet(context, item),
+                              ),
                             );
                           },
                         ),
@@ -167,11 +217,13 @@ class DiaryView extends StatelessWidget {
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: ElevatedButton.icon(
+                    child: OutlinedButton.icon(
                       onPressed: () => _showQuickCaloriesDialog(context, c),
                       icon: const Icon(Icons.bolt, size: 18),
                       label: const Text('Quick Cal'),
-                      style: ElevatedButton.styleFrom(
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: AppColors.primary,
+                        side: const BorderSide(color: AppColors.primary),
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12)),

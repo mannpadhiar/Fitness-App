@@ -81,7 +81,10 @@ class ExerciseController extends GetxController {
   }) async {
     try {
       final userId = await AuthService.getUserId();
-      if (userId == null) return;
+      if (userId == null) {
+        debugPrint('Add exercise error: userId is null');
+        return;
+      }
 
       final response = await ApiService.post(
         '/users/$userId/exercises',
@@ -92,6 +95,8 @@ class ExerciseController extends GetxController {
           'exerciseDate': dateString,
         },
       );
+
+      debugPrint('Add exercise response: ${response.statusCode} ${response.body}');
 
       if (response.statusCode == 201) {
         // Reload from backend
@@ -105,9 +110,27 @@ class ExerciseController extends GetxController {
           colorText: Colors.white,
           duration: const Duration(seconds: 2),
         );
+      } else {
+        debugPrint('Add exercise failed: ${response.statusCode} ${response.body}');
+        Get.snackbar(
+          'Error',
+          'Failed to log exercise',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: const Color(0xFFF85149).withValues(alpha: 0.8),
+          colorText: Colors.white,
+          duration: const Duration(seconds: 2),
+        );
       }
     } catch (e) {
       debugPrint('Add exercise error: $e');
+      Get.snackbar(
+        'Error',
+        'Network error: $e',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: const Color(0xFFF85149).withValues(alpha: 0.8),
+        colorText: Colors.white,
+        duration: const Duration(seconds: 2),
+      );
     }
   }
 

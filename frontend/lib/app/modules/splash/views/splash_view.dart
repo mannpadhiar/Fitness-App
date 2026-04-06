@@ -26,13 +26,13 @@ class _SplashViewState extends State<SplashView>
       duration: const Duration(milliseconds: 700),
     );
 
-    _slideAnimation = Tween<Offset>(
-      begin: Offset.zero,
-      end: const Offset(0, -1.0),
-    ).animate(CurvedAnimation(
-      parent: _slideController,
-      curve: Curves.easeInOutCubic,
-    ));
+    _slideAnimation =
+        Tween<Offset>(begin: Offset.zero, end: const Offset(0, -1.0)).animate(
+          CurvedAnimation(
+            parent: _slideController,
+            curve: Curves.easeInOutCubic,
+          ),
+        );
 
     ever(_controller.isLoadingComplete, (complete) {
       if (complete) {
@@ -53,10 +53,8 @@ class _SplashViewState extends State<SplashView>
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.primary,
       body: SlideTransition(
         position: _slideAnimation,
         child: SizedBox(
@@ -64,13 +62,13 @@ class _SplashViewState extends State<SplashView>
           height: double.infinity,
           child: Column(
             children: [
-              // ====== BLUE SECTION (80%) ======
+              // ====== DARK SECTION (80%) ======
               Expanded(
                 flex: 80,
                 child: Container(
                   width: double.infinity,
                   decoration: const BoxDecoration(
-                    color: AppColors.primary,
+                    color: AppColors.background,
                     borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(36),
                       bottomRight: Radius.circular(36),
@@ -82,45 +80,34 @@ class _SplashViewState extends State<SplashView>
                       children: [
                         const Spacer(flex: 2),
 
-                        // Logo icon
-                        Container(
-                          width: 90,
-                          height: 90,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(24),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.2),
-                                blurRadius: 24,
-                                offset: const Offset(0, 8),
-                              ),
-                            ],
-                          ),
-                          child: const Icon(
-                            Icons.fitness_center_rounded,
-                            size: 42,
-                            color: AppColors.primary,
+                        // Logo from assets
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(24),
+                          child: Image.asset(
+                            'assets/striveLogo.png',
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover,
                           ),
                         ),
                         const SizedBox(height: 28),
 
                         // App name
                         const Text(
-                          'FitTrack',
+                          'STRIVE',
                           style: TextStyle(
                             fontSize: 40,
                             fontWeight: FontWeight.w800,
                             color: Colors.white,
-                            letterSpacing: 2,
+                            letterSpacing: 4,
                           ),
                         ),
                         const SizedBox(height: 10),
                         Text(
-                          'Your fitness companion',
+                          'Push harder than yesterday',
                           style: TextStyle(
                             fontSize: 16,
-                            color: Colors.white.withValues(alpha: 0.8),
+                            color: Colors.white.withValues(alpha: 0.6),
                             fontWeight: FontWeight.w400,
                             letterSpacing: 0.5,
                           ),
@@ -128,23 +115,26 @@ class _SplashViewState extends State<SplashView>
 
                         const Spacer(flex: 2),
 
-                        // Circular progress indicator
-                        Obx(() => _controller.isLoadingComplete.value
-                            ? const Icon(
-                                Icons.check_circle_rounded,
-                                color: AppColors.background,
-                                size: 44,
-                              )
-                            : const SizedBox(
-                                width: 40,
-                                height: 40,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 3.5,
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                      Colors.white),
-                                  backgroundColor: Color(0x40FFFFFF),
+                        // Loading indicator
+                        Obx(
+                          () => _controller.isLoadingComplete.value
+                              ? const Icon(
+                                  Icons.check_circle_rounded,
+                                  color: AppColors.primary,
+                                  size: 44,
+                                )
+                              : const SizedBox(
+                                  width: 40,
+                                  height: 40,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 3.5,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      AppColors.primary,
+                                    ),
+                                    backgroundColor: Color(0x20FFFFFF),
+                                  ),
                                 ),
-                              )),
+                        ),
 
                         const Spacer(flex: 1),
                       ],
@@ -153,21 +143,21 @@ class _SplashViewState extends State<SplashView>
                 ),
               ),
 
-              // ====== BLACK SECTION (20%) ======
+              // ====== BLUE SECTION (20%) ======
               Expanded(
                 flex: 20,
                 child: Container(
                   width: double.infinity,
-                  color: AppColors.background,
+                  color: AppColors.primary,
                   padding: const EdgeInsets.symmetric(horizontal: 32),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text(
+                      Text(
                         'Track calories · Count steps · Stay fit',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: AppColors.textSecondary,
+                          color: Colors.white.withValues(alpha: 0.9),
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
                           letterSpacing: 0.5,
@@ -178,7 +168,7 @@ class _SplashViewState extends State<SplashView>
                         'AI-powered nutrition & fitness tracking',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: AppColors.textMuted,
+                          color: Colors.white.withValues(alpha: 0.6),
                           fontSize: 12,
                           fontWeight: FontWeight.w400,
                         ),

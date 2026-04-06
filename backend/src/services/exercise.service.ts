@@ -1,5 +1,19 @@
 import prisma from "../prisma.js";
-import { syncDailySummary } from "./dailySummary.service.js";
+
+/**
+ * Normalize a date string (YYYY-MM-DD) or Date to a UTC midnight Date.
+ * This ensures consistent matching with Prisma's @db.Date columns.
+ */
+function toDateOnly(input: string | Date): Date {
+  if (typeof input === "string") {
+    // "2026-04-06" → UTC midnight: 2026-04-06T00:00:00.000Z
+    const parts = input.split("T")[0]; // strip any time component
+    return new Date(parts + "T00:00:00.000Z");
+  }
+  // If already a Date, strip time
+  const iso = input.toISOString().split("T")[0];
+  return new Date(iso + "T00:00:00.000Z");
+}
 
 export async function getUserExercises(
   userId: string,
@@ -8,7 +22,7 @@ export async function getUserExercises(
   const where: any = { userId };
 
   if (params.date) {
-    where.exerciseDate = new Date(params.date);
+    where.exerciseDate = toDateOnly(params.date);
   }
 
   return prisma.exercise.findMany({
@@ -26,9 +40,10 @@ export async function createExercise(
     exerciseDate?: string;
   }
 ) {
+  // Normalize to UTC midnight date-only
   const exerciseDate = data.exerciseDate
-    ? new Date(data.exerciseDate)
-    : new Date();
+    ? toDateOnly(data.exerciseDate)
+    : toDateOnly(new Date());
 
   const exercise = await prisma.exercise.create({
     data: {
@@ -63,7 +78,7 @@ export async function deleteExercise(id: string) {
  * exercise entries + step calories for that day.
  */
 async function syncDailySummaryWithExercise(userId: string, date: Date) {
-  const dateOnly = new Date(date.toISOString().split("T")[0]);
+  const dateOnly = toDateOnly(date);
 
   // Sum exercise calories for that day
   const exercises = await prisma.exercise.findMany({

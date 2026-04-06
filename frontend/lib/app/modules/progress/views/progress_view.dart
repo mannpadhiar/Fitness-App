@@ -129,14 +129,15 @@ class ProgressView extends StatelessWidget {
                 if (c.weightHistory.isNotEmpty) _WeightStats(data: c.weightHistory),
                 const SizedBox(height: 16),
                 // Add weight button
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
+                Center(
+                  child: OutlinedButton.icon(
                     onPressed: () => _showAddWeightDialog(context, c),
-                    icon: const Icon(Icons.add, size: 20),
+                    icon: const Icon(Icons.add, size: 18),
                     label: const Text('Log Weight'),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.primary,
+                      side: const BorderSide(color: AppColors.primary),
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12)),
                     ),

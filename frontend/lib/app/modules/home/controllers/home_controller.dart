@@ -377,12 +377,12 @@ class HomeController extends GetxController {
   String get greeting {
     final hour = DateTime.now().hour;
     if (hour < 12) {
-      return 'Good Morning';
+      return 'Rise & grind! ☀️ Make today count.';
     }
     if (hour < 17) {
-      return 'Good Afternoon';
+      return 'Keep the momentum going! 🔥';
     }
-    return 'Good Evening';
+    return 'Strong finish to the day! 🌙';
   }
 
   // --- Logout ---
