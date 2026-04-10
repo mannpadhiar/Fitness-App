@@ -10,6 +10,7 @@ import 'package:fitness_app/app/services/auth_service.dart';
 import 'package:fitness_app/app/services/user_service.dart';
 import 'package:fitness_app/app/services/daily_service.dart';
 import 'package:fitness_app/app/services/data_preload_service.dart';
+import 'package:fitness_app/app/services/food_recommendation_service.dart';
 
 class HomeController extends GetxController {
   final box = GetStorage();
@@ -51,6 +52,11 @@ class HomeController extends GetxController {
   int _initialStreamSteps = -1; // first value from stepCountStream (since boot)
   int _baselineDailySteps = 0;  // steps from getStepCount (today so far)
 
+  // Food Recommendations
+  final recommendations = <Map<String, dynamic>>[].obs;
+  final isLoadingRecommendations = false.obs;
+  final recommendationError = ''.obs;
+
   // Loading
   final isLoading = true.obs;
 
@@ -80,6 +86,8 @@ class HomeController extends GetxController {
       await _loadFromBackend();
     } finally {
       isLoading.value = false;
+      // Fetch food recommendations after data is loaded
+      fetchRecommendations();
     }
   }
 
@@ -392,6 +400,32 @@ class HomeController extends GetxController {
         debugPrint('Step sync failed: $e');
       }
     });
+  }
+
+  // --- Food Recommendations ---
+  Future<void> fetchRecommendations() async {
+    try {
+      isLoadingRecommendations.value = true;
+      recommendationError.value = '';
+
+      final results = await FoodRecommendationService.getRecommendations(
+        targetCalories: targetCalories.value,
+        targetCarbs: targetCarbs.value,
+        targetProtein: targetProtein.value,
+        targetFat: targetFats.value,
+        consumedCalories: foodCalories.value,
+        consumedCarbs: totalCarbs.value,
+        consumedProtein: totalProtein.value,
+        consumedFat: totalFats.value,
+      );
+
+      recommendations.assignAll(results);
+    } catch (e) {
+      debugPrint('Fetch recommendations error: $e');
+      recommendationError.value = 'Could not load recommendations';
+    } finally {
+      isLoadingRecommendations.value = false;
+    }
   }
 
   // --- Greeting ---

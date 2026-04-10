@@ -13,15 +13,56 @@ class SignInView extends StatefulWidget {
 }
 
 class _SignInViewState extends State<SignInView> {
+  final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final nameController = TextEditingController();
   RxBool isLoading = false.obs;
   RxBool isRegister = false.obs;
   RxString errorMessage = "".obs;
+  RxBool obscurePassword = true.obs;
+
+  String? _validateEmail(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Email is required';
+    }
+    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    if (!emailRegex.hasMatch(value.trim())) {
+      return 'Enter a valid email address';
+    }
+    return null;
+  }
+
+  String? _validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Password is required';
+    }
+    if (value.length < 6) {
+      return 'Password must be at least 6 characters';
+    }
+    if (isRegister.value) {
+      if (!RegExp(r'[A-Z]').hasMatch(value)) {
+        return 'Password must contain at least one uppercase letter';
+      }
+      if (!RegExp(r'[0-9]').hasMatch(value)) {
+        return 'Password must contain at least one number';
+      }
+    }
+    return null;
+  }
+
+  String? _validateName(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Name is required';
+    }
+    if (value.trim().length < 2) {
+      return 'Name must be at least 2 characters';
+    }
+    return null;
+  }
 
   Future<void> _submit() async {
-    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
-      errorMessage.value = 'Please fill in all fields';
+    if (!_formKey.currentState!.validate()) {
       return;
     }
 
@@ -70,6 +111,7 @@ class _SignInViewState extends State<SignInView> {
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
+    nameController.dispose();
     super.dispose();
   }
 
@@ -87,31 +129,26 @@ class _SignInViewState extends State<SignInView> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const SizedBox(height: 60),
-                    Container(
-                      width: 80,
-                      height: 80,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white24, width: 2),
-                        borderRadius: BorderRadius.circular(20),
-                        color: const Color.fromARGB(31, 111, 148, 249),
-                      ),
-                      child: const Icon(
-                        Icons.restaurant_menu,
-                        size: 40,
-                        color: Colors.white,
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Image.asset(
+                        'assets/splish_screen.png',
+                        // width: 100,
+                        // height: 100,
+                        fit: BoxFit.cover,
                       ),
                     ),
                     const SizedBox(height: 24),
-                    Text(
-                      'FitTrack',
-                      style: Theme.of(context).textTheme.headlineLarge,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Your personal nutrition companion',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    const SizedBox(height: 40),
+                    // Text(
+                    //   'FitTrack',
+                    //   style: Theme.of(context).textTheme.headlineLarge,
+                    // ),
+                    // const SizedBox(height: 8),
+                    // Text(
+                    //   'Your personal nutrition companion',
+                    //   style: Theme.of(context).textTheme.bodyMedium,
+                    // ),
+                    // const SizedBox(height: 40),
                     Obx(
                       () => Column(
                         children: [
@@ -132,30 +169,72 @@ class _SignInViewState extends State<SignInView> {
                         ],
                       ),
                     ),
-                    TextField(
-                      controller: emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      style: const TextStyle(color: AppColors.textPrimary),
-                      decoration: const InputDecoration(
-                        hintText: 'Email address',
-                        prefixIcon: Icon(
-                          Icons.email_outlined,
-                          color: AppColors.textMuted,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    TextField(
-                      controller: passwordController,
-                      obscureText: true,
-                      style: const TextStyle(color: AppColors.textPrimary),
-                      decoration: const InputDecoration(
-                        hintText: 'Password',
-                        prefixIcon: Icon(
-                          Icons.lock_outlined,
-                          color: AppColors.textMuted,
-                        ),
-                      ),
+                    Form(
+                      key: _formKey,
+                      child: Obx(() => Column(
+                        children: [
+                          // Name field — only visible in register mode
+                          if (isRegister.value) ...[
+                            TextFormField(
+                              controller: nameController,
+                              textInputAction: TextInputAction.next,
+                              style: const TextStyle(color: AppColors.textPrimary),
+                              decoration: const InputDecoration(
+                                hintText: 'Full name',
+                                prefixIcon: Icon(
+                                  Icons.person_outlined,
+                                  color: AppColors.textMuted,
+                                ),
+                              ),
+                              validator: _validateName,
+                            ),
+                            const SizedBox(height: 16),
+                          ],
+                          // Email field
+                          TextFormField(
+                            controller: emailController,
+                            keyboardType: TextInputType.emailAddress,
+                            textInputAction: TextInputAction.next,
+                            style: const TextStyle(color: AppColors.textPrimary),
+                            decoration: const InputDecoration(
+                              hintText: 'Email address',
+                              prefixIcon: Icon(
+                                Icons.email_outlined,
+                                color: AppColors.textMuted,
+                              ),
+                            ),
+                            validator: _validateEmail,
+                          ),
+                          const SizedBox(height: 16),
+                          // Password field
+                          Obx(() => TextFormField(
+                            controller: passwordController,
+                            obscureText: obscurePassword.value,
+                            textInputAction: TextInputAction.done,
+                            onFieldSubmitted: (_) => _submit(),
+                            style: const TextStyle(color: AppColors.textPrimary),
+                            decoration: InputDecoration(
+                              hintText: 'Password',
+                              prefixIcon: const Icon(
+                                Icons.lock_outlined,
+                                color: AppColors.textMuted,
+                              ),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  obscurePassword.value
+                                      ? Icons.visibility_off_outlined
+                                      : Icons.visibility_outlined,
+                                  color: AppColors.textMuted,
+                                ),
+                                onPressed: () {
+                                  obscurePassword.value = !obscurePassword.value;
+                                },
+                              ),
+                            ),
+                            validator: _validatePassword,
+                          )),
+                        ],
+                      )),
                     ),
                     const SizedBox(height: 24),
                     Obx(() =>
