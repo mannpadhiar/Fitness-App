@@ -10,12 +10,21 @@ import 'package:fitness_app/app/modules/exercise/views/exercise_view.dart';
 import 'package:fitness_app/app/modules/diary/controllers/diary_controller.dart';
 import 'package:fitness_app/app/services/food_recognition_service.dart';
 
+import 'package:fitness_app/app/modules/home/controllers/home_controller.dart';
+
 class MainNavController extends GetxController {
   final currentIndex = 0.obs;
 
   void changeTab(int index) {
     if (index == 2) return;
     currentIndex.value = index;
+    // Refresh dashboard data when switching back to home tab
+    if (index == 0) {
+      try {
+        final homeCtrl = Get.find<HomeController>();
+        homeCtrl.refreshDailySummary();
+      } catch (_) {}
+    }
   }
 }
 
@@ -184,7 +193,11 @@ class MainNavView extends StatelessWidget {
                   icon: Icons.directions_walk,
                   label: 'Log Exercise',
                   subtitle: 'Track a workout',
-                  onTap: () => Navigator.pop(context),
+                  onTap: () {
+                    Navigator.pop(context);
+                    final navCtrl = Get.find<MainNavController>();
+                    navCtrl.changeTab(4);
+                  },
                 ),
                 const SizedBox(height: 16),
               ],

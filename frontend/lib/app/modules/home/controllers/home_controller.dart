@@ -40,6 +40,9 @@ class HomeController extends GetxController {
   final totalCarbs = 0.0.obs;
   final totalFats = 0.0.obs;
 
+  // Backend exercise calories (logged manually via exercise page)
+  int _backendExerciseCalories = 0;
+
   // Steps
   final steps = 0.obs;
   final stepsGoal = 8000.obs;
@@ -118,8 +121,24 @@ class HomeController extends GetxController {
         (summary['totalCarbs'] ?? 0).toDouble();
     totalFats.value =
         (summary['totalFats'] ?? 0).toDouble();
-    exerciseCalories.value =
+    _backendExerciseCalories =
         (summary['totalCaloriesBurned'] ?? 0).round();
+    _updateExerciseCalories();
+  }
+
+  /// Public method to refresh daily summary (called when switching back to dashboard)
+  Future<void> refreshDailySummary() async {
+    try {
+      final userId = await AuthService.getUserId();
+      if (userId == null) return;
+      final now = DateTime.now();
+      final dateStr =
+          '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+      final summary = await DailyService.getDailySummary(userId, dateStr);
+      _applyDailySummary(summary);
+    } catch (e) {
+      debugPrint('Refresh daily summary error: $e');
+    }
   }
 
   // --- Permission + Pedometer ---
@@ -189,9 +208,11 @@ class HomeController extends GetxController {
   }
 
   void _updateExerciseCalories() {
-    // Weight-aware formula: calories per step ≈ 0.0005 × weight(kg)
+    // Step-based calories: weight-aware formula ≈ 0.0005 × weight(kg) per step
     final calPerStep = 0.0005 * weightKg.value;
-    exerciseCalories.value = (steps.value * calPerStep).round();
+    final stepCalories = (steps.value * calPerStep).round();
+    // Combine backend-logged exercise calories + step calories
+    exerciseCalories.value = _backendExerciseCalories + stepCalories;
   }
 
   // --- Dynamic Steps Goal Calculation ---
@@ -262,7 +283,7 @@ class HomeController extends GetxController {
     int calculatedSteps = (targetStepCalories / calPerStep).round();
 
     // 8. Clamp to reasonable range
-    calculatedSteps = calculatedSteps.clamp(4000, 15000);
+    calculatedSteps = calculatedSteps.clamp(4000, 10000);
 
     stepsGoal.value = calculatedSteps;
     debugPrint('Dynamic steps goal: $calculatedSteps '
@@ -377,12 +398,12 @@ class HomeController extends GetxController {
   String get greeting {
     final hour = DateTime.now().hour;
     if (hour < 12) {
-      return 'Rise & grind! ☀️ Make today count.';
+      return 'Rise & grind! Make today count.';
     }
     if (hour < 17) {
-      return 'Keep the momentum going! 🔥';
+      return 'Keep the momentum going!';
     }
-    return 'Strong finish to the day! 🌙';
+    return 'Strong finish to the day!';
   }
 
   // --- Logout ---

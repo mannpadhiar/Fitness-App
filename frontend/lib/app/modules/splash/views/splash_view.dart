@@ -78,31 +78,30 @@ class _SplashViewState extends State<SplashView>
                     bottom: false,
                     child: Column(
                       children: [
-                        const Spacer(flex: 2),
+                        const Spacer(flex: 3),
 
-                        // Logo from assets
+                        // Logo
                         ClipRRect(
                           borderRadius: BorderRadius.circular(24),
                           child: Image.asset(
-                            'assets/striveLogo.png',
-                            width: 100,
-                            height: 100,
+                            'assets/playstore.png',
+                            width: 150,
+                            height: 150,
                             fit: BoxFit.cover,
                           ),
                         ),
-                        const SizedBox(height: 28),
+                        const SizedBox(height: 18),
 
                         // App name
-                        const Text(
-                          'STRIVE',
-                          style: TextStyle(
-                            fontSize: 40,
-                            fontWeight: FontWeight.w800,
-                            color: Colors.white,
-                            letterSpacing: 4,
+
+                        Image.asset(
+                            'assets/splish_screen.png',
+                            width: 250,
+                            // height: 200,
+                            fit: BoxFit.cover,
                           ),
-                        ),
-                        const SizedBox(height: 10),
+
+                        const SizedBox(height: 2),
                         Text(
                           'Push harder than yesterday',
                           style: TextStyle(

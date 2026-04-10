@@ -17,13 +17,17 @@ class HomeView extends StatelessWidget {
       appBar: AppBar(
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Image.asset(
-            'assets/striveLogo.png',
-            width: 34,
-            height: 34,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.asset(
+              'assets/playstore.png',
+              width: 34,
+              height: 34,
+              fit: BoxFit.cover,
+            ),
           ),
         ),
-        title: Obx(() => Text('Let\'s crush it, ${c.userName.value}! 💪')),
+        title: Obx(() => Text('Let\'s crush it, ${c.userName.value}!')),
         automaticallyImplyLeading: false,
         actions: [
           Obx(() => GestureDetector(
@@ -76,7 +80,7 @@ class HomeView extends StatelessWidget {
                   'Today • ${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}',
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 6),            
 
                 // --- Calorie Ring Card ---
                 Container(
@@ -102,9 +106,22 @@ class HomeView extends StatelessWidget {
                               .titleLarge
                               ?.copyWith(color: AppColors.textPrimary)),
                       const SizedBox(height: 4),
-                      Text(
-                        'Remaining = Goal − Food + Exercise',
-                        style: Theme.of(context).textTheme.bodySmall,
+                      Row(
+                        children: [
+                          Container(
+                            width: 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              color: const Color.fromARGB(255, 3, 192, 16),
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            'Remaining = Goal − Food + Exercise',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 20),
                       Row(

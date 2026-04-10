@@ -43,6 +43,15 @@ dependencies:
   flutter_dotenv: ^5.1.0
   permission_handler: ^11.3.1
   image_picker: ^1.1.2
+  flutter_launcher_icons:
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/playstore.png"
+  background_color: "#000000"
+  adaptive_icon_background: "#000000"
+  adaptive_icon_foreground: "assets/playstore.png"
 
 dev_dependencies:
   flutter_test:
@@ -69,7 +78,8 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - .env
-    - assets/striveLogo.png
+    - assets/playstore.png
+    - assets/splish_screen.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

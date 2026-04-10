@@ -15,6 +15,7 @@ class AppColors {
   static const Color error = Color(0xFFF85149);
   static const Color gradientStart = Color(0xFF7C3AED);
   static const Color gradientEnd = Color(0xFF3B82F6);
+  static const Color accent = Color(0xFFFFFF3F);
 }
 
 class AppTheme {
