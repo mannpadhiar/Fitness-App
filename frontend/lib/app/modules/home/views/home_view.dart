@@ -659,39 +659,17 @@ class _FoodRecommendationSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Gradient header
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  AppColors.gradientStart.withValues(alpha: 0.3),
-                  AppColors.gradientEnd.withValues(alpha: 0.3),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(20),
-                topRight: Radius.circular(20),
-              ),
-            ),
+          // Header
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 18, 20, 0),
             child: Row(
               children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: AppColors.accent.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Icon(
-                    Icons.restaurant_menu_rounded,
-                    color: AppColors.accent,
-                    size: 22,
-                  ),
+                const Icon(
+                  Icons.restaurant_menu_rounded,
+                  color: AppColors.textSecondary,
+                  size: 20,
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 10),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -767,6 +745,30 @@ class _FoodRecommendationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    if(food["message"] != null){
+      return Container(
+      width: 175,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceLight,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: AppColors.accent.withValues(alpha: 0.2),
+          width: 1,
+        ),
+      ),
+      child: Text(
+        "No Food Available",
+        style: TextStyle(
+          color: AppColors.textPrimary,
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
+    }
+
     final name = food['food_name'] ?? 'Unknown';
     final calories = (food['calories'] ?? 0).toDouble();
     final protein = (food['protein'] ?? 0).toDouble();

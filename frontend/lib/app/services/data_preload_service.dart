@@ -21,11 +21,37 @@ class DataPreloadService extends GetxService {
   // Today's daily summary
   Map<String, dynamic>? dailySummary;
 
+  /// Maximum number of retry attempts for network calls
+  static const int _maxRetries = 3;
+
+  /// Delay between retry attempts
+  static const Duration _retryDelay = Duration(seconds: 2);
+
+  /// Loading status message for the UI
+  final _loadingStatus = ''.obs;
+  String get loadingStatus => _loadingStatus.value;
+
+  /// Helper to retry a future-returning function up to [_maxRetries] times.
+  Future<T> _withRetry<T>(Future<T> Function() fn, String label) async {
+    for (int attempt = 1; attempt <= _maxRetries; attempt++) {
+      try {
+        return await fn();
+      } catch (e) {
+        debugPrint('$label attempt $attempt/$_maxRetries failed: $e');
+        if (attempt == _maxRetries) rethrow;
+        _loadingStatus.value = '$label failed, retrying ($attempt/$_maxRetries)...';
+        await Future.delayed(_retryDelay);
+      }
+    }
+    throw Exception('$label failed after $_maxRetries attempts');
+  }
+
   /// Call this during the splash screen to preload all data.
   /// Returns the route to navigate to after loading.
   Future<String> preloadAndResolveRoute() async {
     try {
       // 1. Check auth
+      _loadingStatus.value = 'Checking authentication...';
       final isLoggedIn = await AuthService.isLoggedIn();
       if (!isLoggedIn) return '/sign-in';
 
@@ -35,9 +61,13 @@ class DataPreloadService extends GetxService {
       // 2. Check onboarding status
       final onboardingDone = box.read('onboardingComplete') ?? false;
 
-      // 3. Fetch user profile (includes active goal)
+      // 3. Fetch user profile (includes active goal) — with retry
+      _loadingStatus.value = 'Loading your profile...';
       try {
-        userData = await UserService.getUser(userId!);
+        userData = await _withRetry(
+          () => UserService.getUser(userId!),
+          'User profile',
+        );
 
         // Check if onboarding is complete (has height/weight)
         if (!onboardingDone) {
@@ -50,25 +80,30 @@ class DataPreloadService extends GetxService {
           }
         }
       } catch (e) {
-        debugPrint('User profile fetch failed: $e');
+        debugPrint('User profile fetch failed after retries: $e');
         // If we have cached data, continue; otherwise show onboarding/sign-in
         if (!onboardingDone && box.read('heightCm') == null) {
           return '/onboarding';
         }
       }
 
-      // 4. Fetch today's daily summary
+      // 4. Fetch today's daily summary — with retry
+      _loadingStatus.value = 'Loading today\'s summary...';
       try {
         final now = DateTime.now();
         final dateStr =
             '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
-        dailySummary = await DailyService.getDailySummary(userId!, dateStr);
+        dailySummary = await _withRetry(
+          () => DailyService.getDailySummary(userId!, dateStr),
+          'Daily summary',
+        );
       } catch (e) {
-        debugPrint('Daily summary preload failed: $e');
+        debugPrint('Daily summary preload failed after retries: $e');
         // Not critical — controller will show zeros
       }
 
       _isPreloaded = true;
+      _loadingStatus.value = 'Ready!';
       return '/home';
     } catch (e) {
       debugPrint('Preload failed: $e');

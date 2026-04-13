@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:fitness_app/app/theme/app_theme.dart';
 import 'package:fitness_app/app/modules/splash/controllers/splash_controller.dart';
+import 'package:fitness_app/app/services/data_preload_service.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -134,6 +135,26 @@ class _SplashViewState extends State<SplashView>
                                   ),
                                 ),
                         ),
+                        const SizedBox(height: 14),
+
+                        // Loading status text
+                        Obx(() {
+                          final preload = Get.find<DataPreloadService>();
+                          final status = preload.loadingStatus;
+                          return AnimatedOpacity(
+                            opacity: status.isEmpty ? 0.0 : 1.0,
+                            duration: const Duration(milliseconds: 300),
+                            child: Text(
+                              status,
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: Colors.white.withValues(alpha: 0.5),
+                                fontWeight: FontWeight.w400,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          );
+                        }),
 
                         const Spacer(flex: 1),
                       ],

@@ -34,7 +34,7 @@ class HomeController extends GetxController {
   final foodCalories = 0.obs;
   final exerciseCalories = 0.obs;
   int get remainingCalories =>
-      targetCalories.value - foodCalories.value + exerciseCalories.value;
+      targetCalories.value - foodCalories.value;
 
   // Nutrition from daily summary
   final totalProtein = 0.0.obs;
