@@ -125,50 +125,40 @@ Whether you're trying to lose weight, gain muscle, or simply maintain a healthie
 
 ---
 
-<!-- ## 📱 Screenshots -->
+## 📱 Screenshots
 
-<!-- 
-  📸 ADD YOUR APP SCREENSHOTS HERE
-  
-  Place your screenshot images in the screenshots/ folder and uncomment the sections below.
-  Recommended: Use PNG or WebP format, keep images under 500KB each.
-  
-  To add screenshots:
-  1. Create a folder called "screenshots" in the project root
-  2. Add your app screenshots to the folder
-  3. Uncomment the relevant sections below and update the file names
--->
-
-<!-- 
-### Splash Screen & Onboarding
+### Home & Dashboard
 <p align="center">
-  <img src="screenshots/splash_screen.png" width="200" alt="Splash Screen" />
-  <img src="screenshots/onboarding_1.png" width="200" alt="Onboarding - Name" />
-  <img src="screenshots/onboarding_2.png" width="200" alt="Onboarding - Goals" />
-  <img src="screenshots/onboarding_3.png" width="200" alt="Onboarding - Activity" />
+  <img src="screenshots/home_screen_screenshot.png" width="220" alt="Home Screen" />
 </p>
 
-### Dashboard
+---
+
+### Food Diary
 <p align="center">
-  <img src="screenshots/dashboard.png" width="200" alt="Dashboard" />
-  <img src="screenshots/dashboard_recommendations.png" width="200" alt="Food Recommendations" />
-  <img src="screenshots/account_drawer.png" width="200" alt="Account Drawer" />
+  <img src="screenshots/diary_screenshot.png" width="220" alt="Diary Screen" />
 </p>
 
-### Food Diary & AI Scanning
+---
+
+### AI Food Logging
 <p align="center">
-  <img src="screenshots/food_diary.png" width="200" alt="Food Diary" />
-  <img src="screenshots/food_scan.png" width="200" alt="AI Food Scan" />
-  <img src="screenshots/food_result.png" width="200" alt="Food Scan Result" />
+  <img src="screenshots/food_log_screenshot.png" width="220" alt="Food Log" />
 </p>
 
-### Exercise & Progress
+---
+
+###  Exercise Tracking
 <p align="center">
-  <img src="screenshots/exercise.png" width="200" alt="Exercise Tracker" />
-  <img src="screenshots/progress_weight.png" width="200" alt="Weight Progress" />
-  <img src="screenshots/progress_calories.png" width="200" alt="Calorie Chart" />
+  <img src="screenshots/exercise_page_screenshot.png" width="220" alt="Exercise Screen" />
 </p>
--->
+
+---
+
+### Weight Progress
+<p align="center">
+  <img src="screenshots/weight_log_screenshot.png" width="220" alt="Weight Log" />
+</p>
 
 ---
 
