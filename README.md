@@ -127,37 +127,12 @@ Whether you're trying to lose weight, gain muscle, or simply maintain a healthie
 
 ## 📱 Screenshots
 
-### Home & Dashboard
 <p align="center">
-  <img src="screenshots/home_screen_screenshot.png" width="220" alt="Home Screen" />
-</p>
-
----
-
-### Food Diary
-<p align="center">
-  <img src="screenshots/diary_screenshot.png" width="220" alt="Diary Screen" />
-</p>
-
----
-
-### AI Food Logging
-<p align="center">
-  <img src="screenshots/food_log_screenshot.png" width="220" alt="Food Log" />
-</p>
-
----
-
-###  Exercise Tracking
-<p align="center">
-  <img src="screenshots/exercise_page_screenshot.png" width="220" alt="Exercise Screen" />
-</p>
-
----
-
-### Weight Progress
-<p align="center">
-  <img src="screenshots/weight_log_screenshot.png" width="220" alt="Weight Log" />
+  <img src="screenshots/home_screen_screenshot.png" width="200" style="margin:10px;" />
+  <img src="screenshots/diary_screenshot.png" width="200" style="margin:10px;" />
+  <img src="screenshots/food_log_screenshot.png" width="200" style="margin:10px;" />
+  <img src="screenshots/exercise_page_screenshot.png" width="200" style="margin:10px;" />
+  <img src="screenshots/weight_log_screenshot.png" width="200" style="margin:10px;" />
 </p>
 
 ---
