@@ -1,8 +1,10 @@
 <p align="center">
-  <img src="frontend/assets/playstore.png" alt="Strive Logo" width="120" height="120" style="border-radius: 24px;" />
+  <img src="frontend/assets/playstore.png" alt="Strive Logo" width="110" style="border-radius: 24px;" />
 </p>
 
-<h1 align="center">Strive</h1>
+<p align="center">
+  <img src="frontend/assets/splish_screen.png" alt="Strive Name" width="260" />
+</p>
 
 <p align="center">
   <em>Push harder than yesterday.</em>
