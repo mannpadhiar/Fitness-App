@@ -128,11 +128,19 @@ Whether you're trying to lose weight, gain muscle, or simply maintain a healthie
 ## 📱 Screenshots
 
 <p align="center">
-  <img src="screenshots/home_screen_screenshot.png" width="200" style="margin:10px;" />
-  <img src="screenshots/diary_screenshot.png" width="200" style="margin:10px;" />
-  <img src="screenshots/food_log_screenshot.png" width="200" style="margin:10px;" />
-  <img src="screenshots/exercise_page_screenshot.png" width="200" style="margin:10px;" />
-  <img src="screenshots/weight_log_screenshot.png" width="200" style="margin:10px;" />
+  <img src="screenshots/all_pages.png" width="80%" style="border-radius: 16px;" />
+</p>
+
+<p align="center">
+  <img src="screenshots/home_screen_screenshot.png" width="180" style="border-radius: 14px; margin:10px;" />
+  <img src="screenshots/diary_screenshot.png" width="180" style="border-radius: 14px; margin:10px;" />
+  <img src="screenshots/food_log_screenshot.png" width="180" style="border-radius: 14px; margin:10px;" />
+  <img src="screenshots/exercise_page_screenshot.png" width="180" style="border-radius: 14px; margin:10px;" />
+  <img src="screenshots/weight_log_screenshot.png" width="180" style="border-radius: 14px; margin:10px;" />
+</p>
+
+<p align="center">
+  <sub>✨ Track calories · Log meals · AI food scan · Monitor progress · Stay consistent</sub>
 </p>
 
 ---
